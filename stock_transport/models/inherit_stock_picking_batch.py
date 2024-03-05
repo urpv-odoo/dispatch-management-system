@@ -9,36 +9,35 @@ class StockPickingBatch(models.Model):
         "fleet.vehicle", "Vehicle", placeholder="Opel GJ45XC1234"
     )
     vehicle_category_id = fields.Many2one(
-        "fleet.vehicle.model.category", "Vehicle Category"
+        "fleet.vehicle.model.category",
+        "Vehicle Category",
+        placeholder="e.g. Semi-Truck",
     )
 
     category_weight = fields.Float(related="vehicle_category_id.max_weight", store=True)
     category_volume = fields.Float(related="vehicle_category_id.max_volume", store=True)
 
-    weight = fields.Float(string="Weight", compute="_compute_weight")
-    volume = fields.Float(string="Volume", compute="_compute_volume")
+    weight = fields.Float(string="Weight", compute="_compute_weight", store=True)
+    volume = fields.Float(string="Volume", compute="_compute_volume", store=True)
 
-    @api.depends(
-        "picking_ids.move_ids.product_id.weight",
-        "picking_ids.move_ids.quantity",
-    )
+    @api.depends("picking_ids.weight")
     def _compute_weight(self):
-        for batch in self:
-            total_weight = sum(
-                move.product_id.weight * move.quantity
-                for move in batch.mapped("picking_ids.move_ids")
-            )
-            batch.weight = total_weight
-        print(self.weight)
+        for record in self:
+            total_weight = 0
+            for picking in record.picking_ids:
+                total_weight += picking.weight
+            if(record.category_volume != 0.0):
+                record.weight = (total_weight / record.category_weight) * 100
+            else:
+                record.weight = 0.0
 
-    @api.depends(
-        "picking_ids.move_ids.product_id.volume", "picking_ids.move_ids.quantity"
-    )
+    @api.depends("picking_ids.volume")
     def _compute_volume(self):
-        for batch in self:
-            total_volume = sum(
-                move.product_id.volume * move.quantity
-                for move in batch.mapped("picking_ids.move_ids")
-            )
-            batch.volume = total_volume
-        print(self.volume)
+        for record in self:
+            total_volume = 0
+            for picking in record.picking_ids:
+                total_volume += picking.volume
+            if(record.category_volume != 0.0):
+                record.volume = (total_volume / record.category_volume) * 100
+            else:
+                record.volume = 0.0

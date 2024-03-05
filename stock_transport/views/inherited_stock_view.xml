@@ -15,23 +15,36 @@
                 <field name="dock_id" />
                 <field name="vehicle_id" />
                 <field name="vehicle_category_id" />
-                <field name="weight" widget="progressbar"
-                    options="{'current_value': 'category_weight', 'max_value': 'category_weight', 'editable': false}" />
-                <field name="volume" widget="progressbar"
-                    options="{'current_value': 'category_volume', 'max_value': 'category_volume', 'editable': false}" />
+                <field name="weight" widget="progressbar"/>
+                <field name="volume" widget="progressbar" />
             </xpath>
         </field>
     </record>
 
-    <record id="view_stock_production_lot_graph_inherit" model="ir.ui.view">
-        <field name="name">stock.production.lot.graph.inherit</field>
+    <record id="stock_picking_batch_graph_view" model="ir.ui.view">
+        <field name="name">stock.picking.batch.graph.inherit</field>
         <field name="model">stock.picking.batch</field>
         <field name="arch" type="xml">
             <graph type="bar">
                 <field name="scheduled_date" group="True" />
                 <field name="vehicle_category_id" group="True" />
+                <field name="weight" type="measure" />
+                <field name="volume" type="measure" />
+                <!-- <field name="" type="measure"/> -->
             </graph>
         </field>
     </record>
+
+    <!-- <record id="stock_picking_batch_gantt_view" model="ir.ui.view">
+        <field name="name">stock.picking.batch.gantt</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <gantt start_date="create_date" >
+                <field name="scheduled_date" />
+                <field name="vehicle_category_id" />
+                <field name="vehicle_id" />
+            </gantt>
+        </field>
+    </record> -->
 
 </odoo>
