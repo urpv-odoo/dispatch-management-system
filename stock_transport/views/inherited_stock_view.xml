@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
+        <field name="view_mode">tree,kanban,graph,form</field>
+    </record>
+
+    <record id="stock_picking_batch_form_view" model="ir.ui.view">
+        <field name="name">stock.picking.batch.form.view</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="dock_id" />
+                <field name="vehicle_id" />
+                <field name="vehicle_category_id" />
+                <field name="weight" widget="progressbar"
+                    options="{'current_value': 'category_weight', 'max_value': 'category_weight', 'editable': false}" />
+                <field name="volume" widget="progressbar"
+                    options="{'current_value': 'category_volume', 'max_value': 'category_volume', 'editable': false}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_production_lot_graph_inherit" model="ir.ui.view">
+        <field name="name">stock.production.lot.graph.inherit</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="scheduled_date" group="True" />
+                <field name="vehicle_category_id" group="True" />
+            </graph>
+        </field>
+    </record>
+
+</odoo>
