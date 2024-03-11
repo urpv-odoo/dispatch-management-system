@@ -14,8 +14,6 @@ class StockPicking(models.Model):
             for move in record.move_line_ids:
                 cal_weight += move.product_id.weight * move.quantity
             record.weight = cal_weight
-            print("From Picking Weight: ")
-            print(record.weight)
 
     @api.depends("product_id", "product_id.volume", "move_line_ids.quantity")
     def _cal_volume(self):
@@ -24,5 +22,3 @@ class StockPicking(models.Model):
             for move in record.move_line_ids:
                 cal_volume += move.product_id.volume * move.quantity
             record.volume = cal_volume
-            print("From Picking Volume: ")
-            print(record.volume)
